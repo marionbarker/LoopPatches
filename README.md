@@ -105,6 +105,8 @@ Tap on the phone settings icon
 * Tap on Loop
 * The graphic below shows phone (Loop) settings: Left before the Patch, Right after the Patch
 
+**WARNING: graphic below has not been updated to show the Min Basal Rate feature.**
+
 <a href="/img/looppatches-loop-settings.svg"><img src="/img/looppatches-loop-settings.svg?raw=true" alt="Image showing the iOS settings screen before and after applying Settings.bundle" width="500"></a>
 
 All settings can be enabled or disabled individually. Be certain that you enter appropriate values before enabling each. Please file an issue if there are problems with mmol/L units.
@@ -117,9 +119,9 @@ After each fresh build, check all the values and check behavior for any enabled 
     * If you do not do this, then within one Loop cycle, the values should be updated anyway
     * Do not guess, make sure the feature you just changed is behaving the way you want
 
-### Automatic Switching Strategy or Basal Lock:
+### Automatic Switching Strategy, Basal Lock or Min Basal Rate:
 
-* Tap (or double-tap) on the "value" row to bring up a keyboard and enter a value, return when done
+* Tap on the "value" row to bring up a keyboard and enter a value, return when done
 * Make sure that value is reasonable **before** sliding the switch to Enabled
     * **If using mmol/L, might need to multiply by 18 to enter threshold in mg/dL for these setting**
 * When modifying a value, be sure to disable the switch, modify and then enable
@@ -159,19 +161,19 @@ For each link below - remember to control-click (or right click) so you can retu
 
 Then follow these directions carefully.
 
-**Note - after the release, the commands will be updated - but for the test_binary branch, they are configured to match the branch name so testers do not need to rename the folder that is downloaded**
+**Note - after the release, the commands will be updated - but for the itsmojo_min_basal branch, they are configured to match the branch name so testers do not need to rename the folder that is downloaded**
 
 1. Open Finder on your computer and examine the Downloads folder
-    * If a folder called `LoopPatches-test_binary` exists, delete it
+    * If a folder called `LoopPatches-itsmojo_min_basal` exists, delete it
         * Hold down the Control Key and click on the folder name and select `Move to Trash`
-    * If a file called `LoopPatches-test_binary.zip` exists, delete it using the same method
+    * If a file called `LoopPatches-itsmojo_min_basal.zip` exists, delete it using the same method
     * Examine Finder to make sure there are no folders or files that begin with LoopPatches in Downloads, there may be others with the number 2 or 3 appended to the name if you downloaded without deleting old copies or unzipped more than one time
 1. Use the green button at the top of this page that says `Code`
     * Click on `Code`
     * Select Download ZIP (wait to find it in finder before unzipping)
 1. Return to Finder and examine the Downloads folder
-    * Double click on `LoopPatches-test_binary.zip`
-    * You will notice this creates the `LoopPatches-test_binary` folder
+    * Double click on `LoopPatches-itsmojo_min_basal.zip`
+    * You will notice this creates the `LoopPatches-itsmojo_min_basal` folder
         * No further action is required
     * You can use the same finder window for the next step - you won't need this location again
 
@@ -207,10 +209,10 @@ Copy the lines below by hovering the mouse near the top right side of the text a
 
 ```
 cd Loop
-git apply ~/Downloads/LoopPatches-test_binary/LoopPatch.txt
+git apply ~/Downloads/LoopPatches-itsmojo_min_basal/LoopPatch.txt
 cd ..
 cd LoopKit
-git apply ~/Downloads/LoopPatches-test_binary/LoopKitPatch.txt
+git apply ~/Downloads/LoopPatches-itsmojo_min_basal/LoopKitPatch.txt
 cd ..
 
 ```
