@@ -1,12 +1,12 @@
 diff --git a/Loop.xcodeproj/project.pbxproj b/Loop.xcodeproj/project.pbxproj
-index fa42fed9..883f7480 100644
+index fa42fed9..3af9d7c2 100644
 --- a/Loop.xcodeproj/project.pbxproj
 +++ b/Loop.xcodeproj/project.pbxproj
 @@ -425,6 +425,7 @@
  		B4E96D5D248A82A2002DABAD /* StatusBarHUDView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B4E96D5C248A82A2002DABAD /* StatusBarHUDView.xib */; };
  		B4F3D25124AF890C0095CE44 /* BluetoothStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3D25024AF890C0095CE44 /* BluetoothStateManager.swift */; };
  		B4FEEF7D24B8A71F00A8DF9B /* DeviceDataManager+DeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEEF7C24B8A71F00A8DF9B /* DeviceDataManager+DeviceStatus.swift */; };
-+		B633A70E291011EE00A39E1D /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B633A70D291011EE00A39E1D /* Settings.bundle */; };
++		B6404B46290C938C005CD5FA /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B6404B45290C938B005CD5FA /* Settings.bundle */; };
  		C10B28461EA9BA5E006EA1FC /* far_future_high_bg_forecast.json in Resources */ = {isa = PBXBuildFile; fileRef = C10B28451EA9BA5E006EA1FC /* far_future_high_bg_forecast.json */; };
  		C11B9D5B286778A800500CF8 /* SwiftCharts in Frameworks */ = {isa = PBXBuildFile; productRef = C11B9D5A286778A800500CF8 /* SwiftCharts */; };
  		C11B9D5E286778D000500CF8 /* LoopKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C11B9D5D286778D000500CF8 /* LoopKitUI.framework */; };
@@ -14,7 +14,7 @@ index fa42fed9..883f7480 100644
  		B4E96D5C248A82A2002DABAD /* StatusBarHUDView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StatusBarHUDView.xib; sourceTree = "<group>"; };
  		B4F3D25024AF890C0095CE44 /* BluetoothStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothStateManager.swift; sourceTree = "<group>"; };
  		B4FEEF7C24B8A71F00A8DF9B /* DeviceDataManager+DeviceStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceDataManager+DeviceStatus.swift"; sourceTree = "<group>"; };
-+		B633A70D291011EE00A39E1D /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
++		B6404B45290C938B005CD5FA /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
  		C101947127DD473C004E7EB8 /* MockKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MockKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
  		C10B28451EA9BA5E006EA1FC /* far_future_high_bg_forecast.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = far_future_high_bg_forecast.json; sourceTree = "<group>"; };
  		C11AA5C7258736CF00BDE12F /* DerivedAssetsBase.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = DerivedAssetsBase.xcassets; sourceTree = "<group>"; };
@@ -22,7 +22,7 @@ index fa42fed9..883f7480 100644
  		43776F831B8022E90074EA36 = {
  			isa = PBXGroup;
  			children = (
-+				B633A70D291011EE00A39E1D /* Settings.bundle */,
++				B6404B45290C938B005CD5FA /* Settings.bundle */,
  				C18A491122FCC20B00FDA733 /* Scripts */,
  				4FF4D0FA1E1834BD00846527 /* Common */,
  				43776F8E1B8022E90074EA36 /* Loop */,
@@ -30,12 +30,12 @@ index fa42fed9..883f7480 100644
  				A966152723EA5A26005D8B29 /* DerivedAssets.xcassets in Resources */,
  				7D70764F1FE06EE1004AC8EA /* InfoPlist.strings in Resources */,
  				7D7076631FE06EE4004AC8EA /* Localizable.strings in Resources */,
-+				B633A70E291011EE00A39E1D /* Settings.bundle in Resources */,
++				B6404B46290C938C005CD5FA /* Settings.bundle in Resources */,
  				43776F971B8022E90074EA36 /* Main.storyboard in Resources */,
  			);
  			runOnlyForDeploymentPostprocessing = 0;
 diff --git a/Loop/Managers/DoseMath.swift b/Loop/Managers/DoseMath.swift
-index 01c9bedf..f178c849 100644
+index 01c9bedf..7d2feff5 100644
 --- a/Loop/Managers/DoseMath.swift
 +++ b/Loop/Managers/DoseMath.swift
 @@ -9,6 +9,7 @@
@@ -46,7 +46,7 @@ index 01c9bedf..f178c849 100644
  
  
  private enum InsulinCorrection {
-@@ -391,13 +392,31 @@ extension Collection where Element: GlucoseValue {
+@@ -391,13 +392,46 @@ extension Collection where Element: GlucoseValue {
              maxBasalRate = scheduledBasalRate
          }
  
@@ -61,7 +61,6 @@ index 01c9bedf..f178c849 100644
 +        // Basal Lock threshold - Jon Fawcett
 +        let basalLockEnabled = UserDefaults.standard.bool(forKey: "basalLockEnabled")
 +        let basalLockThreshold = UserDefaults.standard.double(forKey: "basalLockThreshold")
-+        let basalLockIgnoreSuspend = UserDefaults.standard.bool(forKey: "basalLockIgnoreSuspend")
 +        let glucoseUnit = UserDefaults.standard.string(forKey: "settingsGlucoseUnit")
 +        let hkUnit = glucoseUnit == HKUnit.millimolesPerLiter.unitString ? HKUnit.millimolesPerLiter : HKUnit.milligramsPerDeciliter
 +
@@ -76,21 +75,36 @@ index 01c9bedf..f178c849 100644
 +            }
 +        }
 +
++        // Min Basal Value - Marion Barker
++        let minBasalRateEnabled = UserDefaults.standard.bool(forKey: "minBasalRateEnabled")
++        let minBasalRateValue = UserDefaults.standard.double(forKey: "minBasalRateValue")
++        // take no action if setting is disabled
++        //    or if requested min rate is greater than scheduled rate
++        //    or if requested min rate < 0.05
++        if (minBasalRateEnabled &&
++            minBasalRateValue >= 0.05 &&
++            scheduledBasalRate > minBasalRateValue) {
++            if (temp?.unitsPerHour ?? scheduledBasalRate < minBasalRateValue)
++            {
++                print("####### Min Basal Value Selected #########")
++                temp = TempBasalRecommendation(unitsPerHour: minBasalRateValue, duration: 1800)
++            }
++       }
++
          return temp?.ifNecessary(
              at: date,
              scheduledBasalRate: scheduledBasalRate,
-@@ -481,6 +500,25 @@ extension Collection where Element: GlucoseValue {
+@@ -481,7 +515,40 @@ extension Collection where Element: GlucoseValue {
              volumeRounder: volumeRounder
          )
  
+-        if temp != nil || bolusUnits > 0 {
 +        // Basal Lock threshold - Jon Fawcett
 +        let basalLockEnabled = UserDefaults.standard.bool(forKey: "basalLockEnabled")
 +        let basalLockThreshold = UserDefaults.standard.double(forKey: "basalLockThreshold")
 +        let glucoseUnit = UserDefaults.standard.string(forKey: "settingsGlucoseUnit")
 +        let hkUnit = glucoseUnit == HKUnit.millimolesPerLiter.unitString ? HKUnit.millimolesPerLiter : HKUnit.milligramsPerDeciliter
 +
-+        print("####### Basal Lock Start Code #######")
-+        print(temp?.unitsPerHour)
 +        if (basalLockEnabled && basalLockThreshold != 0) {
 +            if ( (temp?.unitsPerHour ?? scheduledBasalRate < scheduledBasalRate ||
 +                  lastTempBasal?.unitsPerHour ?? scheduledBasalRate < scheduledBasalRate
@@ -102,9 +116,26 @@ index 01c9bedf..f178c849 100644
 +            }
 +        }
 +
-         if temp != nil || bolusUnits > 0 {
++        // Min Basal Value - Marion Barker
++        let minBasalRateEnabled = UserDefaults.standard.bool(forKey: "minBasalRateEnabled")
++        let minBasalRateValue = UserDefaults.standard.double(forKey: "minBasalRateValue")
++        // take no action if setting is disabled
++        //    or if requested min rate is greater than scheduled rate
++        //    or if requested min rate < 0.05
++        if (minBasalRateEnabled &&
++            minBasalRateValue >= 0.05 &&
++            scheduledBasalRate > minBasalRateValue) {
++            if (temp?.unitsPerHour ?? scheduledBasalRate < minBasalRateValue)
++            {
++                print("####### Min Basal Value Selected #########")
++                temp = TempBasalRecommendation(unitsPerHour: minBasalRateValue, duration: 1800)
++            }
++       }
++
++       if temp != nil || bolusUnits > 0 {
              return AutomaticDoseRecommendation(basalAdjustment: temp, bolusUnits: bolusUnits)
          }
+ 
 diff --git a/Loop/Managers/LoopDataManager.swift b/Loop/Managers/LoopDataManager.swift
 index 5fd31fa5..0ca034af 100644
 --- a/Loop/Managers/LoopDataManager.swift
@@ -285,10 +316,10 @@ index 509302a8..cb90bd62 100644
              yAxisLayer,
 diff --git a/Settings.bundle/Root.plist b/Settings.bundle/Root.plist
 new file mode 100644
-index 00000000..a176bd16
+index 00000000..0c2ba7a6
 --- /dev/null
 +++ b/Settings.bundle/Root.plist
-@@ -0,0 +1,229 @@
+@@ -0,0 +1,259 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 +<plist version="1.0">
@@ -512,6 +543,36 @@ index 00000000..a176bd16
 +			<string>Basal Lock Threshold</string>
 +			<key>Key</key>
 +			<string>basalLockThreshold</string>
++			<key>KeyboardType</key>
++			<string>NumbersAndPunctuation</string>
++		</dict>
++		<dict>
++			<key>Type</key>
++			<string>PSGroupSpecifier</string>
++			<key>Title</key>
++			<string>Min Basal Rate</string>
++		</dict>
++		<dict>
++			<key>Type</key>
++			<string>PSToggleSwitchSpecifier</string>
++			<key>Title</key>
++			<string>Enabled</string>
++			<key>Key</key>
++			<string>minBasalRateEnabled</string>
++			<key>DefaultValue</key>
++			<false/>
++			<key>TrueValue</key>
++			<true/>
++			<key>FalseValue</key>
++			<false/>
++		</dict>
++		<dict>
++			<key>Type</key>
++			<string>PSTextFieldSpecifier</string>
++			<key>Title</key>
++			<string>Min Basal Rate Value (U/hr)</string>
++			<key>Key</key>
++			<string>minBasalRateValue</string>
 +			<key>KeyboardType</key>
 +			<string>NumbersAndPunctuation</string>
 +		</dict>
