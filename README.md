@@ -3,6 +3,17 @@
 
 The new feature: Add Now Marker, Main Charts: requires dev code later than 1 Aug 2022
 
+Experimental feature - this branch only
+
+* Min Basal Rate
+    * Last feature in settings
+    * Meant for people who never want to have long periods of zero basal rate
+    * Typical values would be 0.05 to 0.20 U/hr for someone with average rate > 0.5 U/hr
+    * Enable flag is ignored when
+        * Min Basal Rate < 0.05
+        * Scheduled Rate is <= Min Basal Rate (e.g., if scheduled rate is 0, allow 0 as temp basal)
+    * Because Pods deliver basal as late as possible to meet the rate and Loop may update the rate every 20 minutes, even if it is the same, probably want this set no lower than 0.1 U/hr with pod
+
 Tested with
 
 * Loop Dev version: 26 Sep 2022, commit ca8a374
@@ -57,6 +68,11 @@ The configuration for each patch is found under the iOS Loop settings (after pat
     * **Use with care; meant for high glucose >250 mg/dL**
         * **When used improperly, this can cause lows**
         * **If using mmol/L, might need to multiply by 18 to enter threshold in mg/dL for this setting**
+1. Min Basal Rate (NOT shown in graphic - yet)
+    * Last feature in settings
+    * Meant for people who never want to have long periods of zero basal rate
+    * Typical values would be 0.05 to 0.20 U/hr for someone with average rate > 0.5 U/hr
+    * Because Pods deliver basal as late as possible to meet the rate and Loop may update the rate every 20 minutes, even if it is the same, probably want this set no lower than 0.1 U/hr with pod
 
 Use caution with these features and adjust conservatively and slowly for safety.
 
@@ -75,6 +91,7 @@ Use caution with these features and adjust conservatively and slowly for safety.
 * Select open in a new window or new tab of your browser and read about each patch provided by Jon Fawcett
 * New additions to the LoopPatches - provided by Marion Barker
     * Add Now Marker, Main Charts: No documentation required
+    * Add Min Basal Rate - described above
 * Then return to this page before continuing (the documentation page does not have the patch code)
 
 ## Feature Selection
