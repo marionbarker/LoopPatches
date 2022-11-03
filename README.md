@@ -212,7 +212,7 @@ cd Loop
 git apply ~/Downloads/LoopPatches-itsmojo_min_basal/LoopPatch.txt
 cd ..
 cd LoopKit
-git apply ~/Downloads/LoopPatches-itsmojo_min_basal/LoopKitPatch.txt
+git apply ~/Downloads/LoopPatches-itsmojo_min_basal/LoopkitPatch.txt
 cd ..
 
 ```
