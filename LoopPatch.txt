@@ -167,6 +167,23 @@ index f5b0bb02..e8fea8ac 100644
                  let temp = predictedGlucose.recommendedTempBasal(
                      to: glucoseTargetRange!,
                      at: predictedGlucose[0].startDate,
+diff --git a/Loop/View Controllers/CarbEntryViewController.swift b/Loop/View Controllers/CarbEntryViewController.swift
+index 68130f84..324869ed 100644
+--- a/Loop/View Controllers/CarbEntryViewController.swift	
++++ b/Loop/View Controllers/CarbEntryViewController.swift	
+@@ -524,6 +524,12 @@ final class CarbEntryViewController: LoopChartsTableViewController, Identifiable
+         }
+ 
+         guard let quantity = quantity, quantity.doubleValue(for: preferredCarbUnit) > 0 else { return false }
++
++        // LoopPatches: modify max carb entry:
++        let maxCarbEntryFromPatch = UserDefaults.standard.double(forKey: "maxCarbPatchValue")
++        if (maxCarbEntryFromPatch > 0) {
++            maxQuantity = HKQuantity(unit: .gram(), doubleValue: maxCarbEntryFromPatch)
++        }
+         guard quantity.compare(maxQuantity) != .orderedDescending else {
+             navigationDelegate.showMaxQuantityValidationWarning(for: self, maxQuantityGrams: maxQuantity.doubleValue(for: .gram()))
+             return false
 diff --git a/LoopUI/Charts/COBChart.swift b/LoopUI/Charts/COBChart.swift
 index b8fbfd8f..7c956ddd 100644
 --- a/LoopUI/Charts/COBChart.swift
@@ -285,10 +302,10 @@ index 01a343d0..c77ac0bc 100644
              yAxisLayer,
 diff --git a/Settings.bundle/Root.plist b/Settings.bundle/Root.plist
 new file mode 100644
-index 00000000..a176bd16
+index 00000000..19247ccc
 --- /dev/null
 +++ b/Settings.bundle/Root.plist
-@@ -0,0 +1,229 @@
+@@ -0,0 +1,263 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 +<plist version="1.0">
@@ -361,7 +378,7 @@ index 00000000..a176bd16
 +			<key>Key</key>
 +			<string>negativeBasalMultiplier</string>
 +			<key>DefaultValue</key>
-+			<string>1.0</string>
++			<string>100%</string>
 +			<key>Values</key>
 +			<array>
 +				<real>0.05</real>
@@ -437,7 +454,7 @@ index 00000000..a176bd16
 +			<key>Key</key>
 +			<string>alternatePAFSetting</string>
 +			<key>DefaultValue</key>
-+			<string>0.4</string>
++			<string>40%</string>
 +			<key>Values</key>
 +			<array>
 +				<real>0.05</real>
@@ -514,6 +531,40 @@ index 00000000..a176bd16
 +			<string>basalLockThreshold</string>
 +			<key>KeyboardType</key>
 +			<string>NumbersAndPunctuation</string>
++		</dict>
++		<dict>
++			<key>Type</key>
++			<string>PSGroupSpecifier</string>
++			<key>Title</key>
++			<string>Max Allowed Carb Entry</string>
++		</dict>
++		<dict>
++			<key>Type</key>
++			<string>PSMultiValueSpecifier</string>
++			<key>Title</key>
++			<string>Max Allowed Carb Entry</string>
++			<key>Key</key>
++			<string>maxCarbPatchValue</string>
++			<key>DefaultValue</key>
++			<string>250g</string>
++			<key>Values</key>
++			<array>
++				<real>50.0</real>
++				<real>99.0</real>
++				<real>150.0</real>
++				<real>200.0</real>
++				<real>250.0</real>
++				<real>300.0</real>
++			</array>
++			<key>Titles</key>
++			<array>
++				<string>50g</string>
++				<string>99g</string>
++				<string>150g</string>
++				<string>200g</string>
++				<string>250g</string>
++				<string>300g</string>
++			</array>
 +		</dict>
 +	</array>
 +</dict>
