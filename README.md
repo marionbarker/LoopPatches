@@ -9,7 +9,7 @@ This is not yet to the PR stage and should only be used by experienced testers.
 
 There are two parts to this branch.
 
-1. Start with a new clean dev branch clone of LoopWorkspace
+1. Start with LoopWorkspace, dev branch clone that is up to date and stash any modifications you want to keep
 2. Apply the patch that adds the new dosing strategy method
     * Good idea to build and test before moving to next step
     * Inside Loop Settings, there is a new Dosing Strategy: Automatic Bolus: Sliding Scale
@@ -42,12 +42,15 @@ Add new Dosing Strategy of Automatic Bolus: Sliding Scale to LoopWorkspace dev b
 
 ```
 curl https://raw.githubusercontent.com/marionbarker/LoopPatches/patches-new-dosing-strategy/LoopWorkspace-add-dosing-strategy.patch | git apply
-
-
 ```
 
-
 There should be no error messages in response (unless there is an error). Make sure you do not see `error: patch failed` at the beginning of a line with various details afterwords. Be sure to only paste one time to a fresh download. A second paste will show errors. To remove this patch, after applying, just replace `git apply` with `git apply --reverse`.
+
+Once applied, the following submodules with show as having been modified:
+
+* Loop
+* LoopKit
+* NightscoutService
 
 #### PATCH NUMBER TWO: 
 
@@ -56,8 +59,6 @@ These patches are compatible with the version of LoopWorkspace with Dosing Strat
 ```
 curl https://raw.githubusercontent.com/marionbarker/LoopPatches/patches-new-dosing-strategy/LoopPatch.txt | git apply --directory="Loop"
 curl https://raw.githubusercontent.com/marionbarker/LoopPatches/patches-new-dosing-strategy/LoopkitPatch.txt | git apply --directory="LoopKit"
-
-
 ```
 
 
