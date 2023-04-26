@@ -1,0 +1,121 @@
+Submodule Loop d7e107d..4ef6ff1:
+diff --git a/Loop/Loop/Managers/LoopDataManager.swift b/Loop/Loop/Managers/LoopDataManager.swift
+index 18a08166..38673bfd 100644
+--- a/Loop/Loop/Managers/LoopDataManager.swift
++++ b/Loop/Loop/Managers/LoopDataManager.swift
+@@ -1712,6 +1712,39 @@ extension LoopDataManager {
+                     rateRounder: rateRounder,
+                     isBasalRateScheduleOverrideActive: settings.scheduleOverride?.isBasalRateScheduleOverriden(at: startDate) == true
+                 )
++            case .automaticBolusSlidingScale:
++                let volumeRounder = { (_ units: Double) in
++                    return self.delegate?.roundBolusVolume(units: units) ?? units
++                }
++
++                // slidingPartialBolusApplicationFactor calculated based on LoopConstants
++                //    and current glucose and current target range
++                let currentGlucose = glucose.quantity.doubleValue(for: settings.glucoseUnit ?? .milligramsPerDeciliter)
++                let correctionRangeSchedule = settings.effectiveGlucoseTargetRangeSchedule()
++                let correctionRange = correctionRangeSchedule!.quantityRange(at: now())
++                let lowerBoundTarget = correctionRange.lowerBound.doubleValue(for: settings.glucoseUnit ?? .milligramsPerDeciliter)
++                let minGlucoseSlidingScale = LoopConstants.minGlucoseDeltaSlidingScale + lowerBoundTarget
++                let scalingFraction = LoopConstants.scalingNumerator/(LoopConstants.maxGlucoseSlidingScale-minGlucoseSlidingScale)
++                let scalingGlucose = max(currentGlucose - minGlucoseSlidingScale, 0.0)
++                let slidingPartialBolusApplicationFactor = min(LoopConstants.minPartialApplicationFactor + scalingGlucose * scalingFraction, LoopConstants.maxPartialApplicationFactor)
++
++                // If a user customizes maxPartialApplicationFactor > 1; this respects maxBolus
++                let maxAutomaticBolus = min(iobHeadroom, maxBolus! * min(slidingPartialBolusApplicationFactor, 1.0))
++
++                dosingRecommendation = predictedGlucose.recommendedAutomaticDose(
++                    to: glucoseTargetRange!,
++                    at: predictedGlucose[0].startDate,
++                    suspendThreshold: settings.suspendThreshold?.quantity,
++                    sensitivity: insulinSensitivity!,
++                    model: doseStore.insulinModelProvider.model(for: pumpInsulinType),
++                    basalRates: basalRateSchedule!,
++                    maxAutomaticBolus: maxAutomaticBolus,
++                    partialApplicationFactor: slidingPartialBolusApplicationFactor * self.timeBasedDoseApplicationFactor,
++                    lastTempBasal: lastTempBasal,
++                    volumeRounder: volumeRounder,
++                    rateRounder: rateRounder,
++                    isBasalRateScheduleOverrideActive: settings.scheduleOverride?.isBasalRateScheduleOverriden(at: startDate) == true
++                )
+             case .tempBasalOnly:
+ 
+                 let temp = predictedGlucose.recommendedTempBasal(
+diff --git a/Loop/Loop/Models/LoopConstants.swift b/Loop/Loop/Models/LoopConstants.swift
+index a62fc138..cc77c4be 100644
+--- a/Loop/Loop/Models/LoopConstants.swift
++++ b/Loop/Loop/Models/LoopConstants.swift
+@@ -75,4 +75,11 @@ enum LoopConstants {
+     static let simpleBolusCalculatorMinGlucoseBolusRecommendation = HKQuantity(unit: .milligramsPerDeciliter, doubleValue: 70)
+     static let simpleBolusCalculatorMinGlucoseMealBolusRecommendation = HKQuantity(unit: .milligramsPerDeciliter, doubleValue: 55)
+     static let simpleBolusCalculatorGlucoseWarningLimit = HKQuantity(unit: .milligramsPerDeciliter, doubleValue: 70)
++
++    // Dosing Stategy: Automatic Bolus: Sliding Scale
++    static let minPartialApplicationFactor = 0.15 // similar to temp basal strategy
++    static let maxPartialApplicationFactor = 1.00 // full correction
++    static let scalingNumerator = maxPartialApplicationFactor - minPartialApplicationFactor
++    static let minGlucoseDeltaSlidingScale = 10.0 // mg/dL delta from low end of correction range for minPartialApplicationFactor
++    static let maxGlucoseSlidingScale = 250.0 // mg/dL value at which full correction is applied
+ }
+diff --git a/Loop/Loop/Views/DosingStrategySelectionView.swift b/Loop/Loop/Views/DosingStrategySelectionView.swift
+index f447b032..931423d6 100644
+--- a/Loop/Loop/Views/DosingStrategySelectionView.swift
++++ b/Loop/Loop/Views/DosingStrategySelectionView.swift
+@@ -59,6 +59,8 @@ extension AutomaticDosingStrategy {
+             return NSLocalizedString("Loop will set temporary basal rates to increase and decrease insulin delivery.", comment: "Description string for temp basal only dosing strategy")
+         case .automaticBolus:
+             return NSLocalizedString("Loop will automatically bolus when insulin needs are above scheduled basal, and will use temporary basal rates when needed to reduce insulin delivery below scheduled basal.", comment: "Description string for automatic bolus dosing strategy")
++        case .automaticBolusSlidingScale:
++            return NSLocalizedString("Loop will automatically bolus using partial bolus factor that increases with glucose level when insulin needs are above scheduled basal, and will use temporary basal rates when needed to reduce insulin delivery below scheduled basal.", comment: "Description string for sliding scale    automatic bolus dosing strategy")
+         }
+     }
+ 
+diff --git a/Loop/LoopCore/LoopSettings.swift b/Loop/LoopCore/LoopSettings.swift
+index 63418ad4..8f9084a1 100644
+--- a/Loop/LoopCore/LoopSettings.swift
++++ b/Loop/LoopCore/LoopSettings.swift
+@@ -15,6 +15,8 @@ public extension AutomaticDosingStrategy {
+             return LocalizedString("Temp Basal Only", comment: "Title string for temp basal only dosing strategy")
+         case .automaticBolus:
+             return LocalizedString("Automatic Bolus", comment: "Title string for automatic bolus dosing strategy")
++        case .automaticBolusSlidingScale:
++            return LocalizedString("Automatic Bolus: Sliding Scale", comment: "Title string for automatic bolus with sliding scale dosing strategy")
+         }
+     }
+ }
+Submodule LoopKit 78fc003..37b17b3:
+diff --git a/LoopKit/LoopKit/AutomaticDosingStrategy.swift b/LoopKit/LoopKit/AutomaticDosingStrategy.swift
+index d9b7dc5..4425641 100644
+--- a/LoopKit/LoopKit/AutomaticDosingStrategy.swift
++++ b/LoopKit/LoopKit/AutomaticDosingStrategy.swift
+@@ -12,4 +12,5 @@ import Foundation
+ public enum AutomaticDosingStrategy: Int, CaseIterable, Codable {
+     case tempBasalOnly
+     case automaticBolus
++    case automaticBolusSlidingScale
+ }
+Submodule NightscoutService 7a721de..deb206a:
+diff --git a/NightscoutService/NightscoutServiceKit/Extensions/StoredSettings.swift b/NightscoutService/NightscoutServiceKit/Extensions/StoredSettings.swift
+index 0bed9c6..813bdfb 100644
+--- a/NightscoutService/NightscoutServiceKit/Extensions/StoredSettings.swift
++++ b/NightscoutService/NightscoutServiceKit/Extensions/StoredSettings.swift
+@@ -15,6 +15,8 @@ extension AutomaticDosingStrategy {
+         switch self {
+         case .automaticBolus:
+             return "automaticBolus"
++        case .automaticBolusSlidingScale:
++            return "automaticBolusSlidingScale"
+         case .tempBasalOnly:
+             return "tempBasalOnly"
+         }
+@@ -24,6 +26,8 @@ extension AutomaticDosingStrategy {
+         switch name {
+         case "automaticBolus":
+             self = .automaticBolus
++        case "automaticBolusSlidingScale":
++            self = .automaticBolusSlidingScale
+         case "tempBasalOnly":
+             self = .tempBasalOnly
+         default:
