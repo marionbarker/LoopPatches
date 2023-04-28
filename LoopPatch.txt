@@ -94,39 +94,6 @@ index e13a3613..009c23e8 100644
          if temp != nil || bolusUnits > 0 {
              return AutomaticDoseRecommendation(basalAdjustment: temp, bolusUnits: bolusUnits)
          }
-diff --git a/Loop/Managers/LoopDataManager.swift b/Loop/Managers/LoopDataManager.swift
-index 38673bfd..4d41232c 100644
---- a/Loop/Managers/LoopDataManager.swift
-+++ b/Loop/Managers/LoopDataManager.swift
-@@ -1696,7 +1696,18 @@ extension LoopDataManager {
-                     return self.delegate?.roundBolusVolume(units: units) ?? units
-                 }
- 
--                let maxAutomaticBolus = min(iobHeadroom, maxBolus! * LoopConstants.bolusPartialApplicationFactor)
-+                // Patch for bolusPartialApplicationFactor only matters for Dosing Strategy automaticBolus
-+                // Default to the LoopConstants value
-+                var alternateApplicationFactor = LoopConstants.bolusPartialApplicationFactor;
-+
-+                // If patch is enabled, update with selected value
-+                let alternatePAFEnabled = UserDefaults.standard.bool(forKey: "alternatePAFEnabled")
-+                let alternatePAFSetting = UserDefaults.standard.double(forKey: "alternatePAFSetting")
-+                if (alternatePAFEnabled && alternatePAFSetting != 0) {
-+                    alternateApplicationFactor = alternatePAFSetting
-+                }
-+
-+                let maxAutomaticBolus = min(iobHeadroom, maxBolus! * alternateApplicationFactor)
- 
-                 dosingRecommendation = predictedGlucose.recommendedAutomaticDose(
-                     to: glucoseTargetRange!,
-@@ -1706,7 +1717,7 @@ extension LoopDataManager {
-                     model: doseStore.insulinModelProvider.model(for: pumpInsulinType),
-                     basalRates: basalRateSchedule!,
-                     maxAutomaticBolus: maxAutomaticBolus,
--                    partialApplicationFactor: LoopConstants.bolusPartialApplicationFactor * self.timeBasedDoseApplicationFactor,
-+                    partialApplicationFactor: alternateApplicationFactor * self.timeBasedDoseApplicationFactor,
-                     lastTempBasal: lastTempBasal,
-                     volumeRounder: volumeRounder,
-                     rateRounder: rateRounder,
 diff --git a/LoopUI/Charts/COBChart.swift b/LoopUI/Charts/COBChart.swift
 index b8fbfd8f..7c956ddd 100644
 --- a/LoopUI/Charts/COBChart.swift
