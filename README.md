@@ -24,13 +24,13 @@ Summary Instructions.
         * The linear ramp option is disabled by default
 3. (Optional) Apply [PATCH NUMBER TWO](#patch-number-two) to add a compatible version of [CustomTypeOne LoopPatches](https://www.loopandlearn.org/custom-type-one-loop-patches)
     * These patches are not required to test the new linear ramp and should not be used by anyone not already familiar with them
-    * The Dosing Strategy of Automatic Bolus with Linear Ramp enabled is meant to replace the old "Switcher Patch" which has been removed from the branch of LoopPatches
+    * The Dosing Strategy of Automatic Bolus with Linear Ramp enabled is meant to replace the old "Switcher Patch" which has been removed from this branch of LoopPatches
     * The ability to choose bolusPartialApplicationFactor value in LoopPatches remains: as before, it is a constant over all glucose values that replaces the default 40%, but is only used when you disable the Linear Ramp option
     * The other LoopPatches features are unchanged - please refer to the documentation link above
 
 This README file is bare-bones.
 
-* If you have not used LoopPatches before - do not use
+* This is meant for experienced people willing to test new code
 * If you are not keeping up with zulipchat - do not use
 * If you have not read every post in this topic [Dosing Strategy Linear Ramp](https://loop.zulipchat.com/#narrow/stream/144182-development/topic/Dosing.20Strategy.20Linear.20Ramp) - do not use
 
@@ -86,7 +86,6 @@ Copy and paste the next line into the same **LoopWorkspace Terminal Window**. Th
 
 ```
 xed .
-
 ```
 
 * Optional, you can check the modified files inside Xcode using [(Optional) Examine Code Before Building](#optional-examine-code-before-building)
