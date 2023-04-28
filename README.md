@@ -3,30 +3,48 @@
 
 **README last updated on 28-April-2023**
 
-This branch is modified to work with a proposed new Dosing Strategy method, which has been submitted as draft pull requests (Loop 1988 and LoopKit 477). It should only be used by experienced testers. There will be updates. The primary purpose is to provide LoopPatches that still work when/if the PR are accepted.
+This branch is modified to work with a proposed addition to Dosing Strategy of a linear ramp associated with Automatic Bolus.
 
-There are two parts to this branch.
+Draft pull requests (Loop 1988 and LoopKit 477) were submitted on 28-April-2023.
 
-1. Start with LoopWorkspace, dev branch clone that is up to date and stash any modifications you want to keep
-2. Apply the patch that adds the new dosing strategy method
-    * Good idea to build and test before moving to next step
-    * Inside Loop Settings, there is a new toggle to enable linear ramp of the bolus partial application factor
-        * This strategy uses the lower bound of your current correction range and adds 10 md/dL to that for minGlucose
+This branch of LoopPatches should only be used by experienced testers. There will be updates.
+
+* The primary purpose is to provide easy access to this linear ramp addition
+* The secondary purpose is to provide LoopPatches that work in coordination with the code changes in the two pull requests
+
+Summary Instructions.
+
+1. Start with a clean clone of LoopWorkspace, (main or dev as of last test on 28-April-2023) and stash any modifications you want to keep
+2. Apply the patch that adds the linear ramp option to AB dosing strategy
+    * Inside Loop Settings, there is a new toggle to enable the linear ramp of the bolus partial application factor
+        * This strategy uses a minGlucose threshold calculated from the lower bound of your current correction range plus 10 md/dL
         * For glucose at minGlucose and below, a bolusPartialApplicationFactor of 15% is used
         * For glucose at minGlucose to 250 mg/dL, the bolusPartialApplicationFactor ramps up linearly to 100%
         * For glucose greater than 250 mg/dL, the bolusPartialApplicationFactor remains 100%
-3. Apply the LoopPatches from this branch on top of the version with the new dosing strategy
-    * These LoopPatches are modified using the iOS Settings, Loop screen
-    * The Dosing Strategy of Automatic Bolus with Linear Ramp enabled is meant to replace the old "Switcher Patch" which has been removed
-    * The ability to choose bolusPartialApplicationFactor value in LoopPatches remains, but it is used when you disbale the Linear Ramp
+3. (Optional) Apply the LoopPatches from this branch on top of the version with the new dosing strategy
+    * These patches are not required to test the new linear ramp and should not be used by anyone not already familiar with [CustomTypeOne LoopPatches](https://www.loopandlearn.org/custom-type-one-loop-patches)
+    * The Dosing Strategy of Automatic Bolus with Linear Ramp enabled is meant to replace the old "Switcher Patch" which has been removed from the branch of LoopPatches
+    * The ability to choose bolusPartialApplicationFactor value in LoopPatches remains, but it is a constant over all glucose values that replaces the default 40%, and is only used when you disable the Linear Ramp option
+    * The other LoopPatches features are unchanged - please refer to the documentation link above
 
 This README file is bare-bones.
 
 * If you have not used LoopPatches before - do not use
-* If you are not using dev and keeping up with zulipchat - do not use
+* If you are not keeping up with zulipchat - do not use
 * If you have not read every post in this topic [Dosing Strategy Linear Ramp](https://loop.zulipchat.com/#narrow/stream/144182-development/topic/Dosing.20Strategy.20Linear.20Ramp) - do not use
 
 You use these patches at your own risk and **you** are responsible for ensuring they work as you expect. Adjust settings carefully - there are no guardrails or error checking features.
+
+### PR Links
+
+Pay attention to the PR links. There may be changes to the code requested there. Once updates are made at the PR, these patches might be updated without warning.
+
+The two PR for Dosing Strategy Linear Ramp are:
+
+* [Loop #1988](https://github.com/LoopKit/Loop/pull/1988)
+* [LoopKit #477](https://github.com/LoopKit/LoopKit/pull/477)
+
+The code changes in these two PR are contained in [PATCH NUMBER ONE](#patch-number-one)
 
 ### Copy and Paste Commands
 
@@ -36,7 +54,7 @@ Copy the lines below by hovering the mouse near the top right side of the text a
 
 #### PATCH NUMBER ONE:
 
-Add linear ramp toggle to Dosing Strategy, LoopWorkspace dev branch.
+Add linear ramp toggle to Dosing Strategy.
 
 ```
 curl https://raw.githubusercontent.com/marionbarker/LoopPatches/patches-new-dosing-strategy/LoopWorkspace-add-dosing-strategy.patch | git apply
@@ -49,9 +67,11 @@ Once applied, the following submodules with show as having been modified:
 * Loop
 * LoopKit
 
-#### PATCH NUMBER TWO: 
+#### PATCH NUMBER TWO:
 
-These patches are compatible with the version of LoopWorkspace with that patch number one applied. You must apply both patches (single copy / paste action) at the LoopWorkspace level.
+OPTIONAL
+
+These patches are compatible with the version of LoopWorkspace with patch number one applied. They are not required to get the linear ramp working. They are only here for those people who want to have LoopPatches still working for their builds.
 
 ```
 curl https://raw.githubusercontent.com/marionbarker/LoopPatches/patches-new-dosing-strategy/LoopPatch.txt | git apply --directory="Loop"
