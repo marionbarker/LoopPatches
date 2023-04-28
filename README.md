@@ -1,32 +1,30 @@
 ***
 ## LoopPatches
 
-**README last updated on 26-April-2023**
+**README last updated on 28-April-2023**
 
-This branch is modified to work with a proposed new Dosing Strategy method.
-
-This is not yet to the PR stage and should only be used by experienced testers.
+This branch is modified to work with a proposed new Dosing Strategy method, which has been submitted as draft pull requests (Loop 1988 and LoopKit 477). It should only be used by experienced testers. There will be updates. The primary purpose is to provide LoopPatches that still work when/if the PR are accepted.
 
 There are two parts to this branch.
 
 1. Start with LoopWorkspace, dev branch clone that is up to date and stash any modifications you want to keep
 2. Apply the patch that adds the new dosing strategy method
     * Good idea to build and test before moving to next step
-    * Inside Loop Settings, there is a new Dosing Strategy: Automatic Bolus: Sliding Scale
+    * Inside Loop Settings, there is a new toggle to enable linear ramp of the bolus partial application factor
         * This strategy uses the lower bound of your current correction range and adds 10 md/dL to that for minGlucose
         * For glucose at minGlucose and below, a bolusPartialApplicationFactor of 15% is used
         * For glucose at minGlucose to 250 mg/dL, the bolusPartialApplicationFactor ramps up linearly to 100%
         * For glucose greater than 250 mg/dL, the bolusPartialApplicationFactor remains 100%
 3. Apply the LoopPatches from this branch on top of the version with the new dosing strategy
     * These LoopPatches are modified using the iOS Settings, Loop screen
-    * The Dosing Strategy of "Automatic Bolus: Sliding Scale" is meant to replace the old "Switcher Patch" which has been removed
-    * The ability to choose bolusPartialApplicationFactor value in LoopPatches remains, but it is only effective if you choose Dosing Strategy of "Automatic Bolus"
+    * The Dosing Strategy of Automatic Bolus with Linear Ramp enabled is meant to replace the old "Switcher Patch" which has been removed
+    * The ability to choose bolusPartialApplicationFactor value in LoopPatches remains, but it is used when you disbale the Linear Ramp
 
 This README file is bare-bones.
 
 * If you have not used LoopPatches before - do not use
 * If you are not using dev and keeping up with zulipchat - do not use
-* If you have not read every post in this topic [Sliding Scale Partial Application Factor](https://loop.zulipchat.com/#narrow/stream/144182-development/topic/Sliding.20Scale.20Partial.20Application.20Factor) - do not use
+* If you have not read every post in this topic [Dosing Strategy Linear Ramp](https://loop.zulipchat.com/#narrow/stream/144182-development/topic/Dosing.20Strategy.20Linear.20Ramp) - do not use
 
 You use these patches at your own risk and **you** are responsible for ensuring they work as you expect. Adjust settings carefully - there are no guardrails or error checking features.
 
@@ -38,7 +36,7 @@ Copy the lines below by hovering the mouse near the top right side of the text a
 
 #### PATCH NUMBER ONE:
 
-Add new Dosing Strategy of Automatic Bolus: Sliding Scale to LoopWorkspace dev branch.
+Add linear ramp toggle to Dosing Strategy, LoopWorkspace dev branch.
 
 ```
 curl https://raw.githubusercontent.com/marionbarker/LoopPatches/patches-new-dosing-strategy/LoopWorkspace-add-dosing-strategy.patch | git apply
@@ -50,11 +48,10 @@ Once applied, the following submodules with show as having been modified:
 
 * Loop
 * LoopKit
-* NightscoutService
 
 #### PATCH NUMBER TWO: 
 
-These patches are compatible with the version of LoopWorkspace with Dosing Strategy of Automatic Bolus: Sliding Scale to LoopWorkspace. You must apply both patches (single copy / paste action) at the LoopWorkspace level.
+These patches are compatible with the version of LoopWorkspace with that patch number one applied. You must apply both patches (single copy / paste action) at the LoopWorkspace level.
 
 ```
 curl https://raw.githubusercontent.com/marionbarker/LoopPatches/patches-new-dosing-strategy/LoopPatch.txt | git apply --directory="Loop"
