@@ -15,16 +15,17 @@ This branch of LoopPatches should only be used by experienced testers. There wil
 Summary Instructions.
 
 1. Start with a clean clone of LoopWorkspace, (main or dev as of last test on 28-April-2023) and stash any modifications you want to keep
-2. Apply the patch that adds the linear ramp option to AB dosing strategy
-    * Inside Loop Settings, there is a new toggle to enable the linear ramp of the bolus partial application factor
+2. Apply [PATCH NUMBER ONE](#patch-number-one) to add the linear ramp option to AB dosing strategy
+    * Inside Loop Settings, Dosing Strategy, there is a new toggle to enable the linear ramp of the bolus partial application factor
         * This strategy uses a minGlucose threshold calculated from the lower bound of your current correction range plus 10 md/dL
         * For glucose at minGlucose and below, a bolusPartialApplicationFactor of 15% is used
-        * For glucose at minGlucose to 250 mg/dL, the bolusPartialApplicationFactor ramps up linearly to 100%
+        * For glucose in the range of minGlucose to 250 mg/dL, the bolusPartialApplicationFactor ramps up linearly to 100%
         * For glucose greater than 250 mg/dL, the bolusPartialApplicationFactor remains 100%
-3. (Optional) Apply the LoopPatches from this branch on top of the version with the new dosing strategy
-    * These patches are not required to test the new linear ramp and should not be used by anyone not already familiar with [CustomTypeOne LoopPatches](https://www.loopandlearn.org/custom-type-one-loop-patches)
+        * The linear ramp option is disabled by default
+3. (Optional) Apply [PATCH NUMBER TWO](#patch-number-two) to add a compatible version of [CustomTypeOne LoopPatches](https://www.loopandlearn.org/custom-type-one-loop-patches)
+    * These patches are not required to test the new linear ramp and should not be used by anyone not already familiar with them
     * The Dosing Strategy of Automatic Bolus with Linear Ramp enabled is meant to replace the old "Switcher Patch" which has been removed from the branch of LoopPatches
-    * The ability to choose bolusPartialApplicationFactor value in LoopPatches remains, but it is a constant over all glucose values that replaces the default 40%, and is only used when you disable the Linear Ramp option
+    * The ability to choose bolusPartialApplicationFactor value in LoopPatches remains: as before, it is a constant over all glucose values that replaces the default 40%, but is only used when you disable the Linear Ramp option
     * The other LoopPatches features are unchanged - please refer to the documentation link above
 
 This README file is bare-bones.
@@ -144,19 +145,5 @@ Loop will no longer restrict basal when your glucose is higher than this thresho
 
 ## (Optional) Examine Code Before Building
 
-In the Xcode window, left pane, you will notice the letter M appears by modified files.
+In the Xcode window, left pane, you will notice the letter M appears by modified files. Some are in Loop and some in LoopKit.
 
-These files should be modified. If they are not, you did not apply the patches successfully. Note the line numbers are all after the patch has been applied. In your Xcode display, when viewing that file, you will see a vertical blue bar left of the code indicating a line has been modified.
-
-1. Under the Loop folder icon (left side of Xcode pane)
-    * Loop/Managers/DoseMath.swift
-        * line 12, near 395, near 503
-    * Loop/Managers/LoopDataManager.swift
-        * near line 1599, near 1641
-    * LoopUI/Charts
-        * These 4 files contain code for the "now" marker
-        * COBChart.swift, DoseChart.swift, IOBChart.swift and PredictedGlucoseChart.swift
-1. Under the LoopKit folder icon (left side of Xcode pane)
-    * LoopKit/InsulinKit/InsulinMath.swift
-        * near line 43 and 93
-1. If you are comfortable with git command line tools and happen to type git status in the Loop folder, you will notice that `Loop.xcodeproj/project.pbxproj` has been modified and a new Settings.bundle folder with files inside it has been added to the Loop folder.
