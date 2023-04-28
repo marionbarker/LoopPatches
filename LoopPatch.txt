@@ -231,7 +231,7 @@ index 01a343d0..c77ac0bc 100644
              yAxisLayer,
 diff --git a/Settings.bundle/Root.plist b/Settings.bundle/Root.plist
 new file mode 100644
-index 00000000..a9194991
+index 00000000..b61e8ddb
 --- /dev/null
 +++ b/Settings.bundle/Root.plist
 @@ -0,0 +1,205 @@
@@ -247,7 +247,7 @@ index 00000000..a9194991
 +			<key>Type</key>
 +			<string>PSGroupSpecifier</string>
 +			<key>Title</key>
-+			<string>USE NEW DOSING STRATEGY / SWITCHER PATCH REMOVED</string>
++			<string>SWITCHER PATCH REMOVED: USE LINEAR RAMP INSIDE LOOP SETTINGS INSTEAD</string>
 +		</dict>
 +		<dict>
 +			<key>Type</key>
@@ -335,7 +335,7 @@ index 00000000..a9194991
 +			<key>Type</key>
 +			<string>PSGroupSpecifier</string>
 +			<key>Title</key>
-+			<string>Partial Bolus Application Factor / Only for Dosing Strategy of Automatic Bolus</string>
++			<string>CONSTANT BOLUS PARTIAL APPLICATION FACTOR: WHEN LINEAR RAMP NOT ENABLED</string>
 +		</dict>
 +		<dict>
 +			<key>Type</key>
