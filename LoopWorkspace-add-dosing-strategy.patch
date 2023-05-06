@@ -1,4 +1,4 @@
-Submodule Loop 7ce092f..cd1da90:
+Submodule Loop 7ce092f..c60bb40:
 diff --git a/Loop/Loop/Managers/LoopDataManager.swift b/Loop/Loop/Managers/LoopDataManager.swift
 index ffc66ee3..2d2f1ded 100644
 --- a/Loop/Loop/Managers/LoopDataManager.swift
@@ -77,7 +77,7 @@ index e52cada0..ded3e7fc 100644
  
      func storeSettings(newLoopSettings: LoopSettings? = nil, notificationSettings: NotificationSettings? = nil) {
 diff --git a/Loop/Loop/Models/LoopConstants.swift b/Loop/Loop/Models/LoopConstants.swift
-index a62fc138..0bab490b 100644
+index a62fc138..2dc64f18 100644
 --- a/Loop/Loop/Models/LoopConstants.swift
 +++ b/Loop/Loop/Models/LoopConstants.swift
 @@ -75,4 +75,12 @@ enum LoopConstants {
@@ -86,12 +86,12 @@ index a62fc138..0bab490b 100644
      static let simpleBolusCalculatorGlucoseWarningLimit = HKQuantity(unit: .milligramsPerDeciliter, doubleValue: 70)
 +
 +    // Dosing Stategy: Automatic Bolus: Sliding Scale
-+    static let minPartialApplicationFactor = 0.15 // min fraction of correction when glucose > minGlucoseSlidingScale
-+    static let maxPartialApplicationFactor = 1.00 // max fraction of correction when glucose > maxGlucoseSlidingScale
++    static let minPartialApplicationFactor = 0.20 // min fraction of correction when glucose > minGlucoseSlidingScale
++    static let maxPartialApplicationFactor = 0.80 // max fraction of correction when glucose > maxGlucoseSlidingScale
 +    // set minGlucoseSlidingScale based on user setting for correction range
 +    // use mg/dL for calculations
 +    static let minGlucoseDeltaSlidingScale = 10.0 // mg/dL
-+    static let maxGlucoseSlidingScale = 250.0 // mg/dL
++    static let maxGlucoseSlidingScale = 200.0 // mg/dL
  }
 diff --git a/Loop/Loop/View Controllers/StatusTableViewController.swift b/Loop/Loop/View Controllers/StatusTableViewController.swift
 index 0af4bcea..48e62098 100644
