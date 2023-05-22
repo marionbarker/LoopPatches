@@ -14,7 +14,7 @@ This branch of LoopPatches should only be used by experienced testers. There wil
 
 Summary Instructions.
 
-1. Start with a clean clone of LoopWorkspace, (main or dev as of last test on 28-April-2023) and stash any modifications you want to keep
+1. Start with a clean clone of LoopWorkspace, (dev from 28-April-2023 until 20-May-2023; switch to dosing-strategy-ramp-dev with ) and stash any modifications you want to keep
 2. Apply [PATCH NUMBER ONE](#patch-number-one) to add the linear ramp option to AB dosing strategy
     * Inside Loop Settings, Dosing Strategy, there is a new toggle to enable the linear ramp of the bolus partial application factor
         * This strategy uses a minGlucose threshold calculated from the lower bound of your current correction range plus 10 md/dL
