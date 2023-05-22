@@ -21,17 +21,17 @@ If you have a version of Loop with CustomTypeOne LoopPatches installed, you must
 
 1. Start with a clean clone of LoopWorkspace main branch
 2. Apply [PATCH NUMBER ONE](#patch-number-one) to add this new option to AB dosing strategy
-    * Inside Loop Settings, Dosing Strategy, this patch adds a new toggle to enable the "linear ramp" of the bolus partial application factor
+    * Inside Loop Settings, Dosing Strategy, this patch adds a new toggle to enable the "Modify Bolus Percentage" for "Automatic Bolus" dosing strategy
         * This strategy uses a minGlucose threshold calculated from the lower bound of your current correction range plus 10 md/dL
-        * For glucose at minGlucose and below, a bolusPartialApplicationFactor of 20% is used
-        * For glucose in the range of minGlucose to 200 mg/dL, the bolusPartialApplicationFactor increases linearly to 80%
-        * For glucose greater than 200 mg/dL, the bolusPartialApplicationFactor remains 80%
-        * The "linear ramp" option is disabled by default
+        * For glucose at minGlucose and below, a bolus percentage of 20% of the recommended dose is used
+        * For glucose in the range of minGlucose to 200 mg/dL, the bolus percentage increases linearly to 80%
+        * For glucose greater than 200 mg/dL, the bolus percentage remains 80%
+        * The "Modify Bolus Percentage" option is disabled by default, leaving the Automatic Bolus using a fixed percentage of 40% regardless of glucose level
 3. (Optional) Apply [PATCH NUMBER TWO](#patch-number-two) to add a compatible version of [CustomTypeOne LoopPatches](https://www.loopandlearn.org/custom-type-one-loop-patches)
-    * These patches are not required to test the new linear ramp and should not be used by anyone not already familiar with them
-    * The Dosing Strategy of Automatic Bolus with Linear Ramp enabled is meant to replace the old "Switcher Patch" which has been removed from this branch of LoopPatches
+    * These patches are not required to test the Modify Bolus Percentage feature and should not be used by anyone not already familiar with them
+    * The Dosing Strategy of Automatic Bolus with Modify Bolus Percentage enabled is meant to replace the old "Switcher Patch" which has been removed from this branch of LoopPatches
     * The ability to choose bolusPartialApplicationFactor value in LoopPatches remains: as before, it is a constant over all glucose values that replaces the default 40%, but is only used when you disable the new "Linear Ramp" option
-    * The other LoopPatches features are unchanged - please refer to the documentation link above
+    * The ability to choose bolusPartialApplicationFactor value in LoopPatches remains: as before, it is a constant over all glucose values that replaces the default 40%, but is only used when you disable the new "Modify Bolus Percentage" option
 
 This README file is bare-bones.
 
@@ -65,7 +65,7 @@ Copy the lines below by hovering the mouse near the top right side of the text a
 
 #### PATCH NUMBER ONE:
 
-Add linear ramp toggle to Dosing Strategy.
+Add Modify Bolus Percentage toggle to Dosing Strategy, Automatic Bolus.
 
 ```
 curl https://raw.githubusercontent.com/marionbarker/LoopPatches/dosing-strategy-ramp-dev/LoopWorkspace-add-dosing-strategy.patch | git apply
@@ -82,7 +82,7 @@ Once applied, the following submodules with show as having been modified:
 
 OPTIONAL
 
-These patches are compatible with the version of LoopWorkspace with patch number one applied. They are not required to get the linear ramp working. They are only here for those people who want to have LoopPatches still working for their builds.
+These patches are compatible with the version of LoopWorkspace with patch number one applied. They are not required to get the Modify Bolus Percentage working. They are only here for those people who want to have LoopPatches still working for their builds.
 
 ```
 curl https://raw.githubusercontent.com/marionbarker/LoopPatches/dosing-strategy-ramp-dev/LoopPatch.txt | git apply --directory="Loop"
