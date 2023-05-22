@@ -94,18 +94,18 @@ index a62fc138..2dc64f18 100644
 +    static let maxGlucoseSlidingScale = 200.0 // mg/dL
  }
 diff --git a/Loop/Loop/View Controllers/StatusTableViewController.swift b/Loop/Loop/View Controllers/StatusTableViewController.swift
-index 0af4bcea..48e62098 100644
---- a/Loop/Loop/View Controllers/StatusTableViewController.swift	
-+++ b/Loop/Loop/View Controllers/StatusTableViewController.swift	
-@@ -1546,6 +1546,7 @@ final class StatusTableViewController: LoopChartsTableViewController {
-                                           isClosedLoopAllowed: automaticDosingStatus.$isAutomaticDosingAllowed,
+index 904f64ca..221498c0 100644
+--- a/Loop/Loop/View Controllers/StatusTableViewController.swift
++++ b/Loop/Loop/View Controllers/StatusTableViewController.swift
+@@ -1464,6 +1464,7 @@ final class StatusTableViewController: LoopChartsTableViewController {
+                                           isClosedLoopAllowed: closedLoopStatus.$isClosedLoopAllowed,
                                            supportInfoProvider: deviceManager,
                                            automaticDosingStrategy: deviceManager.loopManager.settings.automaticDosingStrategy,
 +                                          applyLinearRampToBolusApplicationFactor: deviceManager.loopManager.settings.applyLinearRampToBolusApplicationFactor,
                                            availableSupports: supportManager.availableSupports,
                                            isOnboardingComplete: onboardingManager.isComplete,
                                            therapySettingsViewModelDelegate: deviceManager,
-@@ -2148,6 +2149,12 @@ extension StatusTableViewController: SettingsViewModelDelegate {
+@@ -2066,6 +2067,12 @@ extension StatusTableViewController: SettingsViewModelDelegate {
          }
      }
  
