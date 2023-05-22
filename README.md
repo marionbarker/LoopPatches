@@ -3,23 +3,26 @@
 
 **README last updated on 22-May-2023**
 
-This branch applies a patch for a new option when selecting Automatic Bolus Dosing Strategy. The option can be enabled on the Dosing Strategy screen and is only active when Automatic Bolus is selected. The percentage of the recommended bolus amount that is automatically delivered ramps from 20% to 80% depending on Glucose level.
+This branch applies a patch for a new option when selecting Automatic Bolus Dosing Strategy. The option can be enabled on the Dosing Strategy screen and is only active when Automatic Bolus is selected. The percentage of the recommended bolus amount that is automatically delivered with each Loop cycle ramps from 20% to 80% depending on Glucose level compared to the lower value in your Correction Range.
 
 * Option is similar in speed of correction to Temp Basal when Glucose is near correction range
 * Option is similar to the fixed 40% correction of Automatic Bolus when Glucose in slightly elevated above correction range
 * Option provides 80% correction with Automatic Bolus when Glucose is elevated (above 200 mg/dL, 11.1 mmol/L)
 
-This branch works with main up through dev (as of May 20, 2023). A separate branch is required for dev after that date.
+This branch works with main (3.2.2).
+A separate branch is required for dev.
 
 The associated PR are (Loop 1988 and LoopKit 477).
 
 This branch of LoopPatches should only be used by experienced testers. There will be updates. We started calling this a "linear" ramp, but it will probably be renamed later.
 
-Summary Instructions.
+If you have a released version of Loop with CustomTypeOne LoopPatches installed, you must first remove them. See [Remove CustomTypeOne LoopPatches](#remove-customtypeone-looppatches).
 
-1. Start with a clean clone of LoopWorkspace, (main or dev as of last test on 28-April-2023) and stash any modifications you want to keep
-2. Apply [PATCH NUMBER ONE](#patch-number-one) to add the new option to AB dosing strategy
-    * Inside Loop Settings, Dosing Strategy, there is a new toggle to enable the "linear ramp" of the bolus partial application factor
+### Summary Instructions
+
+1. Start with a clean clone of LoopWorkspace main branch
+2. Apply [PATCH NUMBER ONE](#patch-number-one) to add this new option to AB dosing strategy
+    * Inside Loop Settings, Dosing Strategy, this patch adds a new toggle to enable the "linear ramp" of the bolus partial application factor
         * This strategy uses a minGlucose threshold calculated from the lower bound of your current correction range plus 10 md/dL
         * For glucose at minGlucose and below, a bolusPartialApplicationFactor of 20% is used
         * For glucose in the range of minGlucose to 200 mg/dL, the bolusPartialApplicationFactor increases linearly to 80%
@@ -41,7 +44,12 @@ You use these patches at your own risk and **you** are responsible for ensuring 
 
 ### PR Links
 
-Pay attention to the PR links. There may be changes to the code requested there. Once updates are made at the PR, these patches might be updated without warning.
+Pay attention to the PR links. There may be changes to the code requested there. Please be aware these PR may be updated for dev branch.
+
+* If you are using Loop main branch - use this patch file with the branch name dosing-strategy-ramp-main
+
+* If you are using Loop dev branch - use this patch file with the branch name dosing-strategy-ramp-dev
+  * Some changes to Loop dev will require patch updates - please be patient 
 
 The two PR for Dosing Strategy Linear Ramp are:
 
@@ -149,3 +157,18 @@ Loop will no longer restrict basal when your glucose is higher than this thresho
 
 In the Xcode window, left pane, you will notice the letter M appears by modified files. Some are in Loop and some in LoopKit.
 
+## Remove CustomTypeOne LoopPatches
+
+If you have the main branch of CustomTypeOne LoopPatches already installed they must first be removed before any of these new patches can be used.
+
+This is true if you added LoopPatches yourself or if you selected Loop with Patches using the Build Select Script.
+
+Go to the LoopWorkspace folder and issue these commands to remove CustomTypeOne LoopPatches main branch from your clone.
+
+```
+curl https://raw.githubusercontent.com/CustomTypeOne/LoopPatches/main/LoopPatch.txt | git apply --reverse --directory=Loop
+curl https://raw.githubusercontent.com/CustomTypeOne/LoopPatches/main/LoopkitPatch.txt | git apply --reverse --directory=LoopKit
+
+```
+
+Then return to [Summary Instructions](#summary-instructions) to apply the new patches.
