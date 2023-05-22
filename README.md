@@ -9,14 +9,13 @@ This branch applies a patch for a new option when selecting Automatic Bolus Dosi
 * Option is similar to the fixed 40% correction of Automatic Bolus when Glucose in slightly elevated above correction range
 * Option provides 80% correction with Automatic Bolus when Glucose is elevated (above 200 mg/dL, 11.1 mmol/L)
 
-This branch works with main (3.2.2).
-A separate branch is required for dev.
+This branch works with dev as of LoopWorkspace commit 0ea1acf, 2023-May-21.
 
 The associated PR are (Loop 1988 and LoopKit 477).
 
 This branch of LoopPatches should only be used by experienced testers. There will be updates. We started calling this a "linear" ramp, but it will probably be renamed later.
 
-If you have a released version of Loop with CustomTypeOne LoopPatches installed, you must first remove them. See [Remove CustomTypeOne LoopPatches](#remove-customtypeone-looppatches).
+If you have a version of Loop with CustomTypeOne LoopPatches installed, you must first remove them. See [Remove CustomTypeOne LoopPatches](#remove-customtypeone-looppatches).
 
 ### Summary Instructions
 
