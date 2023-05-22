@@ -1,6 +1,6 @@
-Submodule Loop 7ce092f..c60bb40:
+Submodule Loop contains modified content
 diff --git a/Loop/Loop/Managers/LoopDataManager.swift b/Loop/Loop/Managers/LoopDataManager.swift
-index ffc66ee3..2d2f1ded 100644
+index 18a08166..e16c8cfb 100644
 --- a/Loop/Loop/Managers/LoopDataManager.swift
 +++ b/Loop/Loop/Managers/LoopDataManager.swift
 @@ -67,6 +67,21 @@ final class LoopDataManager {
@@ -25,7 +25,7 @@ index ffc66ee3..2d2f1ded 100644
      deinit {
          for observer in notificationObservers {
              NotificationCenter.default.removeObserver(observer)
-@@ -1698,7 +1713,18 @@ extension LoopDataManager {
+@@ -1696,7 +1711,18 @@ extension LoopDataManager {
                      return self.delegate?.roundBolusVolume(units: units) ?? units
                  }
  
@@ -45,7 +45,7 @@ index ffc66ee3..2d2f1ded 100644
  
                  dosingRecommendation = predictedGlucose.recommendedAutomaticDose(
                      to: glucoseTargetRange!,
-@@ -1708,7 +1734,7 @@ extension LoopDataManager {
+@@ -1706,7 +1732,7 @@ extension LoopDataManager {
                      model: doseStore.insulinModelProvider.model(for: pumpInsulinType),
                      basalRates: basalRateSchedule!,
                      maxAutomaticBolus: maxAutomaticBolus,
@@ -95,8 +95,8 @@ index a62fc138..2dc64f18 100644
  }
 diff --git a/Loop/Loop/View Controllers/StatusTableViewController.swift b/Loop/Loop/View Controllers/StatusTableViewController.swift
 index 904f64ca..221498c0 100644
---- a/Loop/Loop/View Controllers/StatusTableViewController.swift
-+++ b/Loop/Loop/View Controllers/StatusTableViewController.swift
+--- a/Loop/Loop/View Controllers/StatusTableViewController.swift	
++++ b/Loop/Loop/View Controllers/StatusTableViewController.swift	
 @@ -1464,6 +1464,7 @@ final class StatusTableViewController: LoopChartsTableViewController {
                                            isClosedLoopAllowed: closedLoopStatus.$isClosedLoopAllowed,
                                            supportInfoProvider: deviceManager,
@@ -119,7 +119,7 @@ index 904f64ca..221498c0 100644
          // TODO: this dismiss here is temporary, until we know exactly where
          // we want this screen to belong in the navigation flow
 diff --git a/Loop/Loop/View Models/SettingsViewModel.swift b/Loop/Loop/View Models/SettingsViewModel.swift
-index c24876e2..762c0ccf 100644
+index 16e58743..c3616289 100644
 --- a/Loop/Loop/View Models/SettingsViewModel.swift	
 +++ b/Loop/Loop/View Models/SettingsViewModel.swift	
 @@ -52,6 +52,7 @@ public typealias PumpManagerViewModel = DeviceViewModel<PumpManagerDescriptor>
@@ -159,7 +159,7 @@ index c24876e2..762c0ccf 100644
          self.supportInfoProvider = supportInfoProvider
          self.availableSupports = availableSupports
          self.isOnboardingComplete = isOnboardingComplete
-@@ -198,6 +207,7 @@ extension SettingsViewModel {
+@@ -194,6 +203,7 @@ extension SettingsViewModel {
                                   isClosedLoopAllowed: FakeClosedLoopAllowedPublisher().$mockIsClosedLoopAllowed,
                                   supportInfoProvider: MockSupportInfoProvider(),
                                   automaticDosingStrategy: .automaticBolus,
@@ -168,7 +168,7 @@ index c24876e2..762c0ccf 100644
                                   isOnboardingComplete: false,
                                   therapySettingsViewModelDelegate: nil,
 diff --git a/Loop/Loop/Views/DosingStrategySelectionView.swift b/Loop/Loop/Views/DosingStrategySelectionView.swift
-index f447b032..97ff6a32 100644
+index f447b032..5846654a 100644
 --- a/Loop/Loop/Views/DosingStrategySelectionView.swift
 +++ b/Loop/Loop/Views/DosingStrategySelectionView.swift
 @@ -14,11 +14,13 @@ import LoopKitUI
@@ -187,7 +187,7 @@ index f447b032..97ff6a32 100644
          self._internalDosingStrategy = State(initialValue: automaticDosingStrategy.wrappedValue)
      }
      
-@@ -45,13 +47,34 @@ public struct DosingStrategySelectionView: View {
+@@ -45,27 +47,51 @@ public struct DosingStrategySelectionView: View {
                              self.internalDosingStrategy = strategy // Hack to force update. :(
                          }
                      }
@@ -205,9 +205,9 @@ index f447b032..97ff6a32 100644
 +        return AnyView(
 +            Toggle(isOn: $applyLinearRampToBolusApplicationFactor) {
 +                VStack(alignment: .leading) {
-+                    Text("Linear Bolus Ramp", comment: "The title text for the Apply Linear Ramp to Bolus Application Factor toggle")
++                    Text("Modify Bolus Percentage", comment: "The title text for the Modify Bolus Percentage toggle")
 +                        .padding(.vertical, 0.5)
-+                    Text("Loop will apply a linear ramp to the bolus application factor, gradually increasing the partial bolus factor as glucose levels rise. ", comment: "Description string for Apply Linear Ramp to Bolus Application Factor toggle")
++                    Text("Modify Automatic Bolus behavior: The percentage of recommended bolus delivered each cycle varies with glucose level: near correction range, use 20% (similar to Temp Basal). Gradually increase to a maximum of 80% at high glucose (200 mg/dL, 11.1 mmol/L).", comment: "Description string for Modify Bolus Percentage toggle")
 +                        .font(.footnote)
 +                        .foregroundColor(.secondary)
 +                        .fixedSize(horizontal: false, vertical: true)
@@ -223,7 +223,11 @@ index f447b032..97ff6a32 100644
  extension AutomaticDosingStrategy {
      var informationalText: String {
          switch self {
-@@ -62,10 +85,13 @@ extension AutomaticDosingStrategy {
+         case .tempBasalOnly:
+             return NSLocalizedString("Loop will set temporary basal rates to increase and decrease insulin delivery.", comment: "Description string for temp basal only dosing strategy")
+         case .automaticBolus:
+-            return NSLocalizedString("Loop will automatically bolus when insulin needs are above scheduled basal, and will use temporary basal rates when needed to reduce insulin delivery below scheduled basal.", comment: "Description string for automatic bolus dosing strategy")
++            return NSLocalizedString("Loop will automatically bolus 40% of recommended bolus when insulin needs are above scheduled basal, and will use temporary basal rates when needed to reduce insulin delivery below scheduled basal.", comment: "Description string for automatic bolus dosing strategy")
          }
      }
  
@@ -239,7 +243,7 @@ index f447b032..97ff6a32 100644
      }
  }
 diff --git a/Loop/Loop/Views/SettingsView.swift b/Loop/Loop/Views/SettingsView.swift
-index 22c10d48..71947324 100644
+index 90859273..a6fdaff1 100644
 --- a/Loop/Loop/Views/SettingsView.swift
 +++ b/Loop/Loop/Views/SettingsView.swift
 @@ -125,7 +125,7 @@ extension SettingsView {
@@ -300,7 +304,7 @@ index 63418ad4..9dbbfcca 100644
          ]
  
          raw["glucoseTargetRangeSchedule"] = glucoseTargetRangeSchedule?.rawValue
-Submodule LoopKit a78aa8e..a572f2a:
+Submodule LoopKit contains modified content
 diff --git a/LoopKit/LoopKit/SettingsStore.swift b/LoopKit/LoopKit/SettingsStore.swift
 index afcb9d8..605b26b 100644
 --- a/LoopKit/LoopKit/SettingsStore.swift
