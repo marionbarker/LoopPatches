@@ -86,8 +86,8 @@ OPTIONAL
 These patches are compatible with the version of LoopWorkspace with patch number one applied. They are not required to get the linear ramp working. They are only here for those people who want to have LoopPatches still working for their builds.
 
 ```
-curl https://raw.githubusercontent.com/marionbarker/LoopPatches/patches-new-dosing-strategy/LoopPatch.txt | git apply --directory="Loop"
-curl https://raw.githubusercontent.com/marionbarker/LoopPatches/patches-new-dosing-strategy/LoopkitPatch.txt | git apply --directory="LoopKit"
+curl https://raw.githubusercontent.com/marionbarker/LoopPatches/dosing-strategy-ramp-main/LoopPatch.txt | git apply --directory="Loop"
+curl https://raw.githubusercontent.com/marionbarker/LoopPatches/dosing-strategy-ramp-main/LoopkitPatch.txt | git apply --directory="LoopKit"
 ```
 
 
