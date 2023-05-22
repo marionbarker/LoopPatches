@@ -69,7 +69,7 @@ Copy the lines below by hovering the mouse near the top right side of the text a
 Add linear ramp toggle to Dosing Strategy.
 
 ```
-curl https://raw.githubusercontent.com/marionbarker/LoopPatches/dosing-strategy-ramp-main/LoopWorkspace-add-dosing-strategy.patch | git apply
+curl https://raw.githubusercontent.com/marionbarker/LoopPatches/dosing-strategy-ramp-dev/LoopWorkspace-add-dosing-strategy.patch | git apply
 ```
 
 There should be no error messages in response. Make sure you do not see `error: patch failed` at the beginning of a line with various details afterwords. Be sure to only paste one time to a fresh download. A second paste will show errors. To remove this patch, after applying, just replace `git apply` with `git apply --reverse`.
@@ -86,8 +86,8 @@ OPTIONAL
 These patches are compatible with the version of LoopWorkspace with patch number one applied. They are not required to get the linear ramp working. They are only here for those people who want to have LoopPatches still working for their builds.
 
 ```
-curl https://raw.githubusercontent.com/marionbarker/LoopPatches/dosing-strategy-ramp-main/LoopPatch.txt | git apply --directory="Loop"
-curl https://raw.githubusercontent.com/marionbarker/LoopPatches/dosing-strategy-ramp-main/LoopkitPatch.txt | git apply --directory="LoopKit"
+curl https://raw.githubusercontent.com/marionbarker/LoopPatches/dosing-strategy-ramp-dev/LoopPatch.txt | git apply --directory="Loop"
+curl https://raw.githubusercontent.com/marionbarker/LoopPatches/dosing-strategy-ramp-dev/LoopkitPatch.txt | git apply --directory="LoopKit"
 ```
 
 
