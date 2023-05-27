@@ -85,8 +85,8 @@ OPTIONAL
 These patches are compatible with the version of LoopWorkspace with patch number one applied. They are not required to get the Modify Bolus Percentage working. They are only here for those people who want to have LoopPatches still working for their builds.
 
 ```
-curl https://raw.githubusercontent.com/marionbarker/LoopPatches/dosing-strategy-ramp-dev/LoopPatch.txt | git apply --directory="Loop"
-curl https://raw.githubusercontent.com/marionbarker/LoopPatches/dosing-strategy-ramp-dev/LoopkitPatch.txt | git apply --directory="LoopKit"
+curl https://raw.githubusercontent.com/marionbarker/LoopPatches/dosing-strategy-ramp-dev/LoopWorkspace_cto_no_switcher.patch | git apply 
+
 ```
 
 
