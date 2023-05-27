@@ -293,7 +293,7 @@ new file mode 100644
 index 00000000..b61e8ddb
 --- /dev/null
 +++ b/Loop/Settings.bundle/Root.plist
-@@ -0,0 +1,205 @@
+@@ -0,0 +1,197 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 +<plist version="1.0">
@@ -306,7 +306,7 @@ index 00000000..b61e8ddb
 +			<key>Type</key>
 +			<string>PSGroupSpecifier</string>
 +			<key>Title</key>
-+			<string>SWITCHER PATCH REMOVED: USE LINEAR RAMP INSIDE LOOP SETTINGS INSTEAD</string>
++			<string>SWITCHER PATCH REMOVED: USE MODIFY BOLUS PERCENTAGE INSIDE LOOP, SETTINGS, DOSING STRATEGY</string>
 +		</dict>
 +		<dict>
 +			<key>Type</key>
@@ -345,8 +345,6 @@ index 00000000..b61e8ddb
 +			<string>1.0</string>
 +			<key>Values</key>
 +			<array>
-+				<real>0.05</real>
-+				<real>0.1</real>
 +				<real>0.15</real>
 +				<real>0.2</real>
 +				<real>0.25</real>
@@ -368,8 +366,6 @@ index 00000000..b61e8ddb
 +			</array>
 +			<key>Titles</key>
 +			<array>
-+				<string>5%</string>
-+				<string>10%</string>
 +				<string>15%</string>
 +				<string>20%</string>
 +				<string>25%</string>
@@ -394,7 +390,7 @@ index 00000000..b61e8ddb
 +			<key>Type</key>
 +			<string>PSGroupSpecifier</string>
 +			<key>Title</key>
-+			<string>CONSTANT BOLUS PARTIAL APPLICATION FACTOR: WHEN LINEAR RAMP NOT ENABLED</string>
++			<string>CONSTANT BOLUS PARTIAL APPLICATION FACTOR: WHEN MODIFY BOLUS PERCENTAGE NOT ENABLED</string>
 +		</dict>
 +		<dict>
 +			<key>Type</key>
@@ -421,8 +417,6 @@ index 00000000..b61e8ddb
 +			<string>0.4</string>
 +			<key>Values</key>
 +			<array>
-+				<real>0.05</real>
-+				<real>0.1</real>
 +				<real>0.15</real>
 +				<real>0.2</real>
 +				<real>0.25</real>
@@ -444,8 +438,6 @@ index 00000000..b61e8ddb
 +			</array>
 +			<key>Titles</key>
 +			<array>
-+				<string>5%</string>
-+				<string>10%</string>
 +				<string>15%</string>
 +				<string>20%</string>
 +				<string>25%</string>
