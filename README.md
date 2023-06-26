@@ -1,7 +1,9 @@
 ***
 ## LoopPatches
 
-**README last updated on 3-June-2023**
+**README last updated on 26-June-2023**
+
+The primary source for these patches has moved. See note below.
 
 These patches are provided open source and it is your responsibility to review the code. These patches are highly experimental for testing, research, and education and are not approved for therapy. It is your responsibility to review the code and understand the changes using this makes. You should also run tests in an xcode simulator to review the effect they have on Loop behavior and settings.
 
@@ -9,9 +11,9 @@ LoopPatches offer several adjustments to Loop. Each is disabled by default the f
 
 Documentation found at [LoopPatches](https://www.loopandlearn.org/custom-type-one-loop-patches/). **Read the documentation before applying and using the patches.**
 
-You can use the LoopWorkspace patch file in this repository to apply LoopPatches to released and (as of now) development code.
+The primary source for these patches has moved. As of 25-June-2023, the dev branch is no longer valid. We cannot maintain these patches in more than one place.
 
-However, it is much easier to use the Customization Select script instead. Copy and paste this command into any terminal window to use this script to select desired Customizations for your most recent download of Loop. Documentation is at [Run Customization Select Script](https://www.loopandlearn.org/build-select/#customization-select). 
+The best method is to use the Customization Select script. Documentation is at [Run Customization Select Script](https://www.loopandlearn.org/custom-code) for both Mac-Xcode and Browser Build methods.
 
 The Customization Select Script automatically handles selecting the correct version should updates be required by changes to dev or released code in the future.
 
@@ -24,4 +26,6 @@ The LoopPatches code is lightly tested and **you use this at your own risk**.
 
 There are **no guardrails**, so be extremely careful when you enter thresholds in iOS settings.
 
-**[Loop with Patches](https://www.loopandlearn.org/main-lnl-patches/) already includes the CustomTypeOne LoopPatches with some additional customizations**
+If you prefer to select which patch to apply yourself, LoopPatches are not a LoopWorkspace level patch. You must choose which of the 3 options you want to apply from this folder.
+
+https://github.com/loopandlearn/customization/tree/main/customtypeone_looppatches
