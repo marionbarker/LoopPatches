@@ -1,8 +1,8 @@
 diff --git a/Loop.xcodeproj/project.pbxproj b/Loop.xcodeproj/project.pbxproj
-index 6ddb07b1..07827ef6 100644
+index 0cb02fb9..655c6686 100644
 --- a/Loop.xcodeproj/project.pbxproj
 +++ b/Loop.xcodeproj/project.pbxproj
-@@ -454,6 +454,7 @@
+@@ -424,6 +424,7 @@
  		B4E96D5D248A82A2002DABAD /* StatusBarHUDView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B4E96D5C248A82A2002DABAD /* StatusBarHUDView.xib */; };
  		B4F3D25124AF890C0095CE44 /* BluetoothStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3D25024AF890C0095CE44 /* BluetoothStateManager.swift */; };
  		B4FEEF7D24B8A71F00A8DF9B /* DeviceDataManager+DeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEEF7C24B8A71F00A8DF9B /* DeviceDataManager+DeviceStatus.swift */; };
@@ -10,7 +10,7 @@ index 6ddb07b1..07827ef6 100644
  		C1004DF22981F5B700B8CF94 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C1004DF02981F5B700B8CF94 /* InfoPlist.strings */; };
  		C1004DF52981F5B700B8CF94 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C1004DF32981F5B700B8CF94 /* Localizable.strings */; };
  		C1004DF82981F5B700B8CF94 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C1004DF62981F5B700B8CF94 /* InfoPlist.strings */; };
-@@ -1443,6 +1444,7 @@
+@@ -1402,6 +1403,7 @@
  		B4E96D5C248A82A2002DABAD /* StatusBarHUDView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StatusBarHUDView.xib; sourceTree = "<group>"; };
  		B4F3D25024AF890C0095CE44 /* BluetoothStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothStateManager.swift; sourceTree = "<group>"; };
  		B4FEEF7C24B8A71F00A8DF9B /* DeviceDataManager+DeviceStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceDataManager+DeviceStatus.swift"; sourceTree = "<group>"; };
@@ -18,7 +18,7 @@ index 6ddb07b1..07827ef6 100644
  		C1004DEF2981F5B700B8CF94 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
  		C1004DF12981F5B700B8CF94 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
  		C1004DF42981F5B700B8CF94 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Localizable.strings; sourceTree = "<group>"; };
-@@ -2045,6 +2047,7 @@
+@@ -2058,6 +2060,7 @@
  		43776F831B8022E90074EA36 = {
  			isa = PBXGroup;
  			children = (
@@ -26,7 +26,7 @@ index 6ddb07b1..07827ef6 100644
  				C18A491122FCC20B00FDA733 /* Scripts */,
  				4FF4D0FA1E1834BD00846527 /* Common */,
  				43776F8E1B8022E90074EA36 /* Loop */,
-@@ -3465,6 +3468,7 @@
+@@ -3497,6 +3500,7 @@
  				A966152723EA5A26005D8B29 /* DerivedAssets.xcassets in Resources */,
  				7D70764F1FE06EE1004AC8EA /* InfoPlist.strings in Resources */,
  				7D7076631FE06EE4004AC8EA /* Localizable.strings in Resources */,
@@ -34,6 +34,28 @@ index 6ddb07b1..07827ef6 100644
  				43776F971B8022E90074EA36 /* Main.storyboard in Resources */,
  			);
  			runOnlyForDeploymentPostprocessing = 0;
+diff --git a/Loop/Models/ConstantApplicationFactorStrategy.swift b/Loop/Models/ConstantApplicationFactorStrategy.swift
+index 5084108e..0e01cea3 100644
+--- a/Loop/Models/ConstantApplicationFactorStrategy.swift
++++ b/Loop/Models/ConstantApplicationFactorStrategy.swift
+@@ -17,7 +17,16 @@ struct ConstantApplicationFactorStrategy: ApplicationFactorStrategy {
+         correctionRangeSchedule: GlucoseRangeSchedule,
+         settings: LoopSettings
+     ) -> Double {
++        // Modify Bolus Application Factor for modified CustomTypeOne LoopPatches
++        //   only effective for ConstantApplicationFactorStrategy
++        var constantBolusApplicationFactor = LoopConstants.bolusPartialApplicationFactor
++        let alternatePAFEnabled = UserDefaults.standard.bool(forKey: "alternatePAFEnabled")
++        let alternatePAFSetting = UserDefaults.standard.double(forKey: "alternatePAFSetting")
++        if (alternatePAFEnabled && alternatePAFSetting != 0) {
++            constantBolusApplicationFactor = alternatePAFSetting
++        }
++
+         // The original strategy uses a constant dosing factor.
+-        return LoopConstants.bolusPartialApplicationFactor
++        return constantBolusApplicationFactor
+     }
+ }
 diff --git a/Loop/Managers/DoseMath.swift b/Loop/Managers/DoseMath.swift
 index e13a3613..009c23e8 100644
 --- a/Loop/Managers/DoseMath.swift
@@ -94,76 +116,10 @@ index e13a3613..009c23e8 100644
          if temp != nil || bolusUnits > 0 {
              return AutomaticDoseRecommendation(basalAdjustment: temp, bolusUnits: bolusUnits)
          }
-diff --git a/Loop/Managers/LoopDataManager.swift b/Loop/Managers/LoopDataManager.swift
-index 18a08166..a130caea 100644
---- a/Loop/Managers/LoopDataManager.swift
-+++ b/Loop/Managers/LoopDataManager.swift
-@@ -1690,13 +1690,42 @@ extension LoopDataManager {
-             let automaticDosingIOBLimit = maxBolus! * 2.0
-             let iobHeadroom = automaticDosingIOBLimit - self.insulinOnBoard!.value
- 
--            switch settings.automaticDosingStrategy {
--            case .automaticBolus:
-+            // Dynamic Application Factor and Strategy Switching
-+
-+            // Default to the LoopConstants value
-+            var alternateApplicationFactor = LoopConstants.bolusPartialApplicationFactor;
-+
-+            let alternatePAFEnabled = UserDefaults.standard.bool(forKey: "alternatePAFEnabled")
-+            let alternatePAFSetting = UserDefaults.standard.double(forKey: "alternatePAFSetting")
-+
-+            let dosingStrategyAutomationEnabled = UserDefaults.standard.bool(forKey: "dosingStrategyAutomationEnabled")
-+            let dosingStrategyThreshold = UserDefaults.standard.double(forKey: "dosingStrategyThreshold")
-+
-+            if (alternatePAFEnabled && alternatePAFSetting != 0) {
-+                alternateApplicationFactor = alternatePAFSetting
-+            }
-+
-+            var switcherIsAB = false;
-+
-+            if (dosingStrategyAutomationEnabled && dosingStrategyThreshold != 0) {
-+                if( glucose.quantity > HKQuantity(unit : settings.glucoseUnit ?? .milligramsPerDeciliter, doubleValue: dosingStrategyThreshold) && settings.automaticDosingStrategy == .automaticBolus){
-+                     switcherIsAB = true;
-+                 } else {
-+                     switcherIsAB = false;
-+                 }
-+            } else if (settings.automaticDosingStrategy == .automaticBolus) {
-+                switcherIsAB = true;
-+            }
-+
-+            UserDefaults.standard.set(settings.glucoseUnit?.unitString ?? HKUnit.milligramsPerDeciliter.unitString, forKey: "settingsGlucoseUnit")
-+
-+            switch switcherIsAB {
-+            case true:
-                 let volumeRounder = { (_ units: Double) in
-                     return self.delegate?.roundBolusVolume(units: units) ?? units
-                 }
- 
--                let maxAutomaticBolus = min(iobHeadroom, maxBolus! * LoopConstants.bolusPartialApplicationFactor)
-+                let maxAutomaticBolus = min(iobHeadroom, maxBolus! * alternateApplicationFactor)
- 
-                 dosingRecommendation = predictedGlucose.recommendedAutomaticDose(
-                     to: glucoseTargetRange!,
-@@ -1706,13 +1735,13 @@ extension LoopDataManager {
-                     model: doseStore.insulinModelProvider.model(for: pumpInsulinType),
-                     basalRates: basalRateSchedule!,
-                     maxAutomaticBolus: maxAutomaticBolus,
--                    partialApplicationFactor: LoopConstants.bolusPartialApplicationFactor * self.timeBasedDoseApplicationFactor,
-+                    partialApplicationFactor: alternateApplicationFactor * self.timeBasedDoseApplicationFactor,
-                     lastTempBasal: lastTempBasal,
-                     volumeRounder: volumeRounder,
-                     rateRounder: rateRounder,
-                     isBasalRateScheduleOverrideActive: settings.scheduleOverride?.isBasalRateScheduleOverriden(at: startDate) == true
-                 )
--            case .tempBasalOnly:
-+            case false:
- 
-                 let temp = predictedGlucose.recommendedTempBasal(
-                     to: glucoseTargetRange!,
-diff --git a/LoopUI/Charts/COBChart.swift b/LoopUI/Charts/COBChart.swift
+diff --git a/Loop/LoopUI/Charts/COBChart.swift b/Loop/LoopUI/Charts/COBChart.swift
 index b8fbfd8f..7c956ddd 100644
---- a/LoopUI/Charts/COBChart.swift
-+++ b/LoopUI/Charts/COBChart.swift
+--- a/Loop/LoopUI/Charts/COBChart.swift
++++ b/Loop/LoopUI/Charts/COBChart.swift
 @@ -63,6 +63,16 @@ public extension COBChart {
          // Grid lines
          let gridLayer = ChartGuideLinesForValuesLayer(xAxis: xAxisLayer.axis, yAxis: yAxisLayer.axis, settings: guideLinesLayerSettings, axisValuesX: Array(xAxisValues.dropFirst().dropLast()), axisValuesY: yAxisValues)
@@ -189,10 +145,10 @@ index b8fbfd8f..7c956ddd 100644
              xAxisLayer,
              yAxisLayer,
              cobChartCache?.highlightLayer,
-diff --git a/LoopUI/Charts/DoseChart.swift b/LoopUI/Charts/DoseChart.swift
+diff --git a/Loop/LoopUI/Charts/DoseChart.swift b/Loop/LoopUI/Charts/DoseChart.swift
 index a2558511..8ddd6191 100644
---- a/LoopUI/Charts/DoseChart.swift
-+++ b/LoopUI/Charts/DoseChart.swift
+--- a/Loop/LoopUI/Charts/DoseChart.swift
++++ b/Loop/LoopUI/Charts/DoseChart.swift
 @@ -106,6 +106,16 @@ public extension DoseChart {
          // Grid lines
          let gridLayer = ChartGuideLinesForValuesLayer(xAxis: xAxisLayer.axis, yAxis: yAxisLayer.axis, settings: guideLinesLayerSettings, axisValuesX: Array(xAxisValues.dropFirst().dropLast()), axisValuesY: yAxisValues)
@@ -218,11 +174,11 @@ index a2558511..8ddd6191 100644
              xAxisLayer,
              yAxisLayer,
              zeroGuidelineLayer,
-diff --git a/LoopUI/Charts/IOBChart.swift b/LoopUI/Charts/IOBChart.swift
-index 256d2685..745161c8 100644
---- a/LoopUI/Charts/IOBChart.swift
-+++ b/LoopUI/Charts/IOBChart.swift
-@@ -62,6 +62,16 @@ public extension IOBChart {
+diff --git a/Loop/LoopUI/Charts/IOBChart.swift b/Loop/LoopUI/Charts/IOBChart.swift
+index a78699ea..5d6a44ca 100644
+--- a/Loop/LoopUI/Charts/IOBChart.swift
++++ b/Loop/LoopUI/Charts/IOBChart.swift
+@@ -66,6 +66,16 @@ public extension IOBChart {
          // Grid lines
          let gridLayer = ChartGuideLinesForValuesLayer(xAxis: xAxisLayer.axis, yAxis: yAxisLayer.axis, settings: guideLinesLayerSettings, axisValuesX: Array(xAxisValues.dropFirst().dropLast()), axisValuesY: yAxisValues)
  
@@ -239,7 +195,7 @@ index 256d2685..745161c8 100644
          // 0-line
          let dummyZeroChartPoint = ChartPoint(x: ChartAxisValueDouble(0), y: ChartAxisValueDouble(0))
          let zeroGuidelineLayer = ChartPointsViewsLayer(xAxis: xAxisLayer.axis, yAxis: yAxisLayer.axis, chartPoints: [dummyZeroChartPoint], viewGenerator: {(chartPointModel, layer, chart) -> UIView? in
-@@ -86,6 +96,7 @@ public extension IOBChart {
+@@ -90,6 +100,7 @@ public extension IOBChart {
  
          let layers: [ChartLayer?] = [
              gridLayer,
@@ -247,10 +203,10 @@ index 256d2685..745161c8 100644
              xAxisLayer,
              yAxisLayer,
              zeroGuidelineLayer,
-diff --git a/LoopUI/Charts/PredictedGlucoseChart.swift b/LoopUI/Charts/PredictedGlucoseChart.swift
+diff --git a/Loop/LoopUI/Charts/PredictedGlucoseChart.swift b/Loop/LoopUI/Charts/PredictedGlucoseChart.swift
 index 01a343d0..c77ac0bc 100644
---- a/LoopUI/Charts/PredictedGlucoseChart.swift
-+++ b/LoopUI/Charts/PredictedGlucoseChart.swift
+--- a/Loop/LoopUI/Charts/PredictedGlucoseChart.swift
++++ b/Loop/LoopUI/Charts/PredictedGlucoseChart.swift
 @@ -170,6 +170,16 @@ extension PredictedGlucoseChart {
          // Grid lines
          let gridLayer = ChartGuideLinesForValuesLayer(xAxis: xAxisLayer.axis, yAxis: yAxisLayer.axis, settings: guideLinesLayerSettings, axisValuesX: Array(xAxisValues.dropFirst().dropLast()), axisValuesY: yAxisValues)
@@ -276,12 +232,12 @@ index 01a343d0..c77ac0bc 100644
              targetsLayer,
              xAxisLayer,
              yAxisLayer,
-diff --git a/Settings.bundle/Root.plist b/Settings.bundle/Root.plist
+diff --git a/Loop/Settings.bundle/Root.plist b/Loop/Settings.bundle/Root.plist
 new file mode 100644
-index 00000000..a176bd16
+index 00000000..b61e8ddb
 --- /dev/null
-+++ b/Settings.bundle/Root.plist
-@@ -0,0 +1,229 @@
++++ b/Loop/Settings.bundle/Root.plist
+@@ -0,0 +1,197 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 +<plist version="1.0">
@@ -290,6 +246,12 @@ index 00000000..a176bd16
 +	<string>Root</string>
 +	<key>PreferenceSpecifiers</key>
 +	<array>
++		<dict>
++			<key>Type</key>
++			<string>PSGroupSpecifier</string>
++			<key>Title</key>
++			<string>SWITCHER PATCH REPLACED - USE GLUCOSE BASED PARTIAL APPLICATION IN LOOP, SETTINGS</string>
++		</dict>
 +		<dict>
 +			<key>Type</key>
 +			<string>PSGroupSpecifier</string>
@@ -314,36 +276,6 @@ index 00000000..a176bd16
 +			<key>Type</key>
 +			<string>PSGroupSpecifier</string>
 +			<key>Title</key>
-+			<string>Automatic Strategy Switching</string>
-+		</dict>
-+		<dict>
-+			<key>Type</key>
-+			<string>PSToggleSwitchSpecifier</string>
-+			<key>Title</key>
-+			<string>Enabled</string>
-+			<key>Key</key>
-+			<string>dosingStrategyAutomationEnabled</string>
-+			<key>DefaultValue</key>
-+			<false/>
-+			<key>TrueValue</key>
-+			<true/>
-+			<key>FalseValue</key>
-+			<false/>
-+		</dict>
-+		<dict>
-+			<key>Type</key>
-+			<string>PSTextFieldSpecifier</string>
-+			<key>Title</key>
-+			<string>Switching BG Threshold</string>
-+			<key>Key</key>
-+			<string>dosingStrategyThreshold</string>
-+			<key>KeyboardType</key>
-+			<string>NumbersAndPunctuation</string>
-+		</dict>
-+		<dict>
-+			<key>Type</key>
-+			<string>PSGroupSpecifier</string>
-+			<key>Title</key>
 +			<string>Negative IOB Factor</string>
 +		</dict>
 +		<dict>
@@ -357,8 +289,6 @@ index 00000000..a176bd16
 +			<string>1.0</string>
 +			<key>Values</key>
 +			<array>
-+				<real>0.05</real>
-+				<real>0.1</real>
 +				<real>0.15</real>
 +				<real>0.2</real>
 +				<real>0.25</real>
@@ -380,8 +310,6 @@ index 00000000..a176bd16
 +			</array>
 +			<key>Titles</key>
 +			<array>
-+				<string>5%</string>
-+				<string>10%</string>
 +				<string>15%</string>
 +				<string>20%</string>
 +				<string>25%</string>
@@ -406,7 +334,7 @@ index 00000000..a176bd16
 +			<key>Type</key>
 +			<string>PSGroupSpecifier</string>
 +			<key>Title</key>
-+			<string>Partial Bolus Application Factor</string>
++			<string>VALID ONLY WHEN GLUCOSE BASED PARTIAL APPLICATION NOT ENABLED - CONSTANT PARTIAL APPLICATION</string>
 +		</dict>
 +		<dict>
 +			<key>Type</key>
@@ -433,8 +361,6 @@ index 00000000..a176bd16
 +			<string>0.4</string>
 +			<key>Values</key>
 +			<array>
-+				<real>0.05</real>
-+				<real>0.1</real>
 +				<real>0.15</real>
 +				<real>0.2</real>
 +				<real>0.25</real>
@@ -456,8 +382,6 @@ index 00000000..a176bd16
 +			</array>
 +			<key>Titles</key>
 +			<array>
-+				<string>5%</string>
-+				<string>10%</string>
 +				<string>15%</string>
 +				<string>20%</string>
 +				<string>25%</string>
@@ -511,17 +435,3 @@ index 00000000..a176bd16
 +	</array>
 +</dict>
 +</plist>
-diff --git a/Settings.bundle/en.lproj/Root.strings b/Settings.bundle/en.lproj/Root.strings
-new file mode 100644
-index 0000000000000000000000000000000000000000..8cd87b9d6b20c1fbf87bd4db3db267fca5ad4df9
-GIT binary patch
-literal 546
-zcmaixOHRW;5JYRuDMndFh#Ua1V1d}N;sVAV2TO?uC3a9aJn*VxFrY}tnon0(S66#J
-z-d9>G>6W!ur(SDqlp`9nn~*(m%iWnv?yq`Qfp6XbK1?+om~~#r)ZnhkYQU_VbfjuT
-zHNn`CX<0sd*m<h0(azec(iObNh^%?ujr&=v=s=H#N;|Sb!c#%F;_UPWVjneF55ql&
-z;1>1<hFx!9AHUHrospb<`X7`yGd%lD#4Y=Ob9s`bR=VI@=sx_8^jm=6uzq9L!Fr&_
-nmcBD*Mox@AX7QwJ{2yYbnSDNcs=Q<RN>A}>&5sU$akD=GTXJ1e
-
-literal 0
-HcmV?d00001
-
